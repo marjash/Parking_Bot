@@ -1,0 +1,9 @@
+streamlit
+langchain
+langchain-core
+langchain-google-genai
+langgraph
+langsmith
+python-dotenv
+pyTelegramBotAPI
+google-generativeai
