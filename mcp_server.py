@@ -1,6 +1,7 @@
 from datetime import datetime
+import os
 
-RESERVATIONS_FILE = "reservations.txt"
+RESERVATIONS_FILE = os.path.join(os.path.dirname(__file__), "reservations.txt")
 
 def write_reservation_to_file(name: str, surname: str, plate: str, start_datetime: str, end_datetime: str) -> bool:
     """
