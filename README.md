@@ -42,4 +42,5 @@ streamlit run app.py
 - chatbot_logic.py: LLM integration and NLP logic.
 - admin_panel.py: Telegram bot for administrator actions.
 - database.py: SQLite interactions.
-- mcp_server.py: write reservation to file
+- mcp_server.py: Write reservation to file
+- rag_evaluation: Evaluation of the RAG system
