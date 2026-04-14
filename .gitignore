@@ -6,3 +6,4 @@ reservations.txt
 .env
 *.db
 *.log
+*.json
