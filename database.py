@@ -45,18 +45,15 @@ def update_order_status(plate: str, status: str) -> bool:
             with get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute('''
-                    UPDATE orders 
+                    UPDATE orders
                     SET status = ?, updated_at = ?
                     WHERE plate = ?
                 ''', (status, datetime.now(), plate))
-                
+
                 if cursor.rowcount == 0:
-                    # Insert if doesn't exist
-                    cursor.execute('''
-                        INSERT INTO orders (plate, status, updated_at)
-                        VALUES (?, ?, ?)
-                    ''', (plate, status, datetime.now()))
-                
+                    logging.warning(f"No order found for plate: {plate}")
+                    return False
+
                 conn.commit()
                 return True
         except Exception as e:

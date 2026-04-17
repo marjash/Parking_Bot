@@ -78,7 +78,7 @@ WHITELIST_ENTITIES = {
 def privacy_filter(text: str, current_session: dict) -> str:
     """Enhanced privacy filtering with logging."""
     
-    print(f"Original response: {text}")
+    logging.debug(f"Original response: {text}")
     # Build dynamic whitelist from session
     dynamic_whitelist = set()
     for key in ["Name", "Surname"]:
@@ -174,7 +174,7 @@ def update_user_session(user_id: str, user_input: str, current_session: dict) ->
         
         # Clean and parse
         clean_json = re.sub(r"```json|```", "", response).strip().replace("```", "")
-        print(f"Extracted data: {clean_json}")
+        logging.debug(f"Extracted data: {clean_json}")
 
         new_data = json.loads(clean_json)
         # Validate and update
@@ -209,7 +209,7 @@ def get_stored_date(st, key, default=None):
         return default
     try:
         return stored.date()
-    except:
+    except (AttributeError, ValueError):
         return default
 
 def get_stored_time(st, key, default=None):
@@ -218,7 +218,7 @@ def get_stored_time(st, key, default=None):
         return default
     try:
         return stored.time()
-    except:
+    except (AttributeError, ValueError):
         return default
 
 def create_telegram_session() -> requests.Session:

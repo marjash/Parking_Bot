@@ -38,11 +38,11 @@ def chatbot_node(state: AgentState):
             "status": "ready_to_submit",
             "messages": state['messages'] + [AIMessage(content="Дякую! Всі дані зібрано. Перевірте їх та натисніть кнопку відправки.")]
         }
-    
+
     ai_res = get_ai_response(user_input, updated_data)
     return {
         "user_data": updated_data,
-        "status": "collecting",
+        "status": state['status'] if is_complete else "collecting",
         "messages": state['messages'] + [AIMessage(content=ai_res)]
     }
 

@@ -14,11 +14,10 @@ from database import update_order_status
 
 # 1. Logging and Configuration Setup
 logging.basicConfig(
-    filename='admin_bot.log',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('chatbot.log'),
+        logging.FileHandler('admin_bot.log'),
         logging.StreamHandler()
     ]
 )

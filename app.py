@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+from html import escape
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -75,11 +76,17 @@ with col2:
     end_time = st.time_input("Час завершення", value=current_et, key="et")
 
 if all([start_date, start_time, end_date, end_time]):
-    start_datetime = datetime.combine(start_date, start_time).strftime("%d.%m.%Y %H:%M")
-    end_datetime = datetime.combine(end_date, end_time).strftime("%d.%m.%Y %H:%M")
-    st.session_state.user_data["StartDateTime"] = start_datetime
-    st.session_state.user_data["EndDateTime"] = end_datetime
-    st.session_state.dates_set = True
+    start_dt = datetime.combine(start_date, start_time)
+    end_dt = datetime.combine(end_date, end_time)
+    if end_dt <= start_dt:
+        st.error("⚠️ Дата завершення має бути пізніше дати початку.")
+        st.session_state.dates_set = False
+    else:
+        start_datetime = start_dt.strftime("%d.%m.%Y %H:%M")
+        end_datetime = end_dt.strftime("%d.%m.%Y %H:%M")
+        st.session_state.user_data["StartDateTime"] = start_datetime
+        st.session_state.user_data["EndDateTime"] = end_datetime
+        st.session_state.dates_set = True
 else:
     st.session_state.user_data["StartDateTime"] = None
     st.session_state.user_data["EndDateTime"] = None
@@ -128,16 +135,18 @@ if is_complete and st.session_state.status != "finalized":
             if st.button("🚀 Надіслати запит", use_container_width=True):
                 with st.spinner('Відправка...'):
                     create_order(
-                        name=user_info['Name'], 
-                        surname=user_info['Surname'], 
+                        name=user_info['Name'],
+                        surname=user_info['Surname'],
                         plate=user_info['Plate'],
                         start_datetime=datetime.strptime(start_datetime, "%d.%m.%Y %H:%M"),
                         end_datetime=datetime.strptime(end_datetime, "%d.%m.%Y %H:%M")
                     )
-                    # Calling the graph with a special trigger
-                    process_step("SEND_TO_ADMIN_TRIGGER", st.session_state.user_data, st.session_state.status)
-                    st.session_state.status = "pending"
-                    st.session_state.sent_success = True
+                    result = process_step("SEND_TO_ADMIN_TRIGGER", st.session_state.user_data, st.session_state.status)
+                    if result.get('error'):
+                        st.error("❌ Не вдалося надіслати запит адміністратору. Спробуйте ще раз.")
+                    else:
+                        st.session_state.status = "pending"
+                        st.session_state.sent_success = True
                     st.rerun()
 
     else:
